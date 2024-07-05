@@ -48,7 +48,8 @@ func (model rootModel) View() string {
 }
 
 func main() {
-	if os.Args[1] == "-d" {
+	if len(os.Args) == 2 && os.Args[1] == "-d" {
+		fmt.Println("Will log to ../logs/warroom.log")
 		file, err := tea.LogToFile("../logs/warroom.log", "Debug")
 		if err != nil {
 			fmt.Println("fatal: ", err)
