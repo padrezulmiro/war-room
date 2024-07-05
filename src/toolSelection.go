@@ -7,19 +7,22 @@ import (
 type toolSelectionModel struct {
 	currentSelection int
 	chosenTool string
-	flag bool
 }
 
 var tools = [2]string{
 	"Building planner",
+	"Invasion planner",
 }
 
-func (model *toolSelectionModel) Update(msg tea.Msg) tea.Cmd {
+func (model *toolSelectionModel) Update(msg tea.Msg) (modelState, tea.Cmd) {
+	retModelState := ToolSelectionMenuState
+	var retCmd tea.Cmd
+
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
-			return tea.Quit
+			retCmd = tea.Quit
 
 		case "up", "k":
 			if model.currentSelection > 0 {
@@ -31,18 +34,12 @@ func (model *toolSelectionModel) Update(msg tea.Msg) tea.Cmd {
 				model.currentSelection++
 			}
 
-		case " ":
-			if model.flag {
-				model.flag = false
-			} else {
-				model.flag = true
-			}
-
 		case "enter":
 			model.chosenTool = tools[model.currentSelection]
 		}
 	}
-	return nil
+
+	return retModelState, retCmd
 }
 
 func (model *toolSelectionModel) View() string {
