@@ -20,11 +20,6 @@ type rootModel struct {
 	buildingPlanner buildingPlannerModel
 }
 
-type mapSelectionModel struct {
-	selectedMap string
-	selectedShard int
-}
-
 type buildingPlannerModel struct {}
 
 func (model rootModel) Init() tea.Cmd {
@@ -32,11 +27,16 @@ func (model rootModel) Init() tea.Cmd {
 }
 
 func (model rootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	var newModelState modelState
+	var retCmd tea.Cmd
+
 	switch model.state {
 	case ToolSelectionMenuState:
-		return model, model.toolSelection.Update(msg)
+		newModelState, retCmd = model.toolSelection.Update(msg)
 	}
-	return model, nil
+
+	model.state = newModelState
+	return model, retCmd
 }
 
 func (model rootModel) View() string {
@@ -48,12 +48,14 @@ func (model rootModel) View() string {
 }
 
 func main() {
-	file, err := tea.LogToFile("../logs/warroom.log", "Debug")
-	if err != nil {
-		fmt.Println("fatal: ", err)
-		os.Exit(1)
+	if os.Args[1] == "-d" {
+		file, err := tea.LogToFile("../logs/warroom.log", "Debug")
+		if err != nil {
+			fmt.Println("fatal: ", err)
+			os.Exit(1)
+		}
+		defer file.Close()
 	}
-	defer file.Close()
 
 	model := rootModel{
 		ToolSelectionMenuState,
