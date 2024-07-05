@@ -33,6 +33,8 @@ func (model rootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch model.state {
 	case ToolSelectionMenuState:
 		newModelState, retCmd = model.toolSelection.Update(msg)
+	case MapSelectionMenuState:
+		newModelState, retCmd = model.mapSelection.Update(msg)
 	}
 
 	model.state = newModelState

@@ -6,7 +6,6 @@ import (
 
 type toolSelectionModel struct {
 	currentSelection int
-	chosenTool string
 }
 
 var tools = [2]string{
@@ -35,7 +34,7 @@ func (model *toolSelectionModel) Update(msg tea.Msg) (modelState, tea.Cmd) {
 			}
 
 		case "enter":
-			model.chosenTool = tools[model.currentSelection]
+			retModelState = MapSelectionMenuState
 		}
 	}
 
