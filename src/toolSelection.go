@@ -1,41 +1,56 @@
 package main
 
 import (
+	"strings"
 	tea "github.com/charmbracelet/bubbletea"
 )
 
 type toolSelectionModel struct {
-	currentSelection int
-	chosenTool string
+	currentSelection toolSelectionType
 }
 
-var tools = [2]string{
-	"Building planner",
-	"Invasion planner",
+type toolSelectionType int
+const (
+	BuildingPlannerTool toolSelectionType = iota
+	InvasionPlannerTool
+)
+
+var toolSelectionTypeStr = map[toolSelectionType]string{
+	BuildingPlannerTool: "Building planner",
+	InvasionPlannerTool: "Invasion planner",
+}
+
+var toolTypeToModelStateMap = map[toolSelectionType]modelState{
+	BuildingPlannerTool: UnderConstructionState,
+	InvasionPlannerTool: UnderConstructionState,
+}
+
+func (model *toolSelectionModel) Init() {
+	model.currentSelection = BuildingPlannerTool
 }
 
 func (model *toolSelectionModel) Update(msg tea.Msg) (modelState, tea.Cmd) {
 	retModelState := ToolSelectionMenuState
-	var retCmd tea.Cmd
+	var retCmd tea.Cmd = nil
 
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
 		switch msg.String() {
 		case "ctrl+c", "q":
-			retCmd = tea.Quit
+			return retModelState, tea.Quit
 
 		case "up", "k":
-			if model.currentSelection > 0 {
+			if model.currentSelection > BuildingPlannerTool {
 				model.currentSelection--
 			}
 
 		case "down", "j":
-			if model.currentSelection < len(tools) - 1 {
+			if model.currentSelection < InvasionPlannerTool {
 				model.currentSelection++
 			}
 
 		case "enter":
-			model.chosenTool = tools[model.currentSelection]
+			retModelState = toolTypeToModelStateMap[model.currentSelection]
 		}
 	}
 
@@ -43,18 +58,18 @@ func (model *toolSelectionModel) Update(msg tea.Msg) (modelState, tea.Cmd) {
 }
 
 func (model *toolSelectionModel) View() string {
-	vStr := "SCREEPS WAR ROOM\n"
-	vStr += "----------------\n\n"
+	var sb strings.Builder
+	sb.WriteString("SCREEPS WAR ROOM\n")
+	sb.WriteString("----------------\n\n")
 
-	for i, tool := range tools {
+	for i := BuildingPlannerTool; i <= InvasionPlannerTool; i++ {
 		if model.currentSelection == i {
-			vStr += "> "
+			sb.WriteString("> ")
 		} else {
-			vStr += "- "
+			sb.WriteString("- ")
 		}
-
-		vStr += tool + "\n"
+		sb.WriteString(toolSelectionTypeStr[i] + "\n")
 	}
 
-	return vStr
+	return sb.String()
 }

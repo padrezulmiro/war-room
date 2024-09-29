@@ -10,17 +10,32 @@ type modelState int
 const (
 	ToolSelectionMenuState modelState = iota
 	MapSelectionMenuState
-	BuildingPlannerState
+	UnderConstructionState
 )
 
 type rootModel struct {
 	state modelState
 	toolSelection toolSelectionModel
 	mapSelection mapSelectionModel
-	buildingPlanner buildingPlannerModel
+	underConstruction underConstructionModel
 }
 
-type buildingPlannerModel struct {}
+func newRootModel() *rootModel {
+	model := rootModel {
+		ToolSelectionMenuState,
+		toolSelectionModel{},
+		mapSelectionModel{},
+		underConstructionModel{},
+	}
+
+	model.init()
+	return &model
+}
+
+func (rootModel *rootModel) init() {
+	rootModel.toolSelection.Init()
+	rootModel.mapSelection.Init()
+}
 
 func (model rootModel) Init() tea.Cmd {
 	return nil
@@ -33,6 +48,8 @@ func (model rootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch model.state {
 	case ToolSelectionMenuState:
 		newModelState, retCmd = model.toolSelection.Update(msg)
+	case UnderConstructionState:
+		newModelState, retCmd = model.underConstruction.Update(msg)
 	}
 
 	model.state = newModelState
@@ -43,6 +60,8 @@ func (model rootModel) View() string {
 	switch model.state {
 	case ToolSelectionMenuState:
 		return model.toolSelection.View()
+	case UnderConstructionState:
+		return model.underConstruction.View()
 	}
 	return "Error: This page shouldn't have been reached!"
 }
@@ -58,14 +77,7 @@ func main() {
 		defer file.Close()
 	}
 
-	model := rootModel{
-		ToolSelectionMenuState,
-		toolSelectionModel{},
-		mapSelectionModel{},
-		buildingPlannerModel{},
-	}
-
-	teaProgram := tea.NewProgram(model)
+	teaProgram := tea.NewProgram(newRootModel())
 
 	if _, err := teaProgram.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
