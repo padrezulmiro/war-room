@@ -81,7 +81,7 @@ func main() {
 		defer file.Close()
 	}
 
-	teaProgram := tea.NewProgram(newRootModel())
+	teaProgram := tea.NewProgram(newRootModel(), tea.WithAltScreen())
 
 	if _, err := teaProgram.Run(); err != nil {
 		fmt.Printf("Alas, there's been an error: %v", err)
