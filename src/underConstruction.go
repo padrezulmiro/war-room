@@ -28,6 +28,10 @@ func (model *underConstructionModel) Update(msg tea.Msg) (modelState, tea.Cmd) {
 }
 
 func (model *underConstructionModel) View() string {
+	if model.content != "" {
+		return model.content
+	}
+
 	return `404 - Apologies, this page is still under construction!
 Please press q or Ctrl-c to exit the app.\n\n`
 }

@@ -21,7 +21,7 @@ var toolSelectionTypeStr = map[toolSelectionType]string{
 }
 
 var toolTypeToModelStateMap = map[toolSelectionType]modelState{
-	BuildingPlannerTool: UnderConstructionState,
+	BuildingPlannerTool: MapSelectionMenuState,
 	InvasionPlannerTool: UnderConstructionState,
 }
 

@@ -48,6 +48,8 @@ func (model rootModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch model.state {
 	case ToolSelectionMenuState:
 		newModelState, retCmd = model.toolSelection.Update(msg)
+	case MapSelectionMenuState:
+		newModelState, retCmd = model.mapSelection.Update(msg)
 	case UnderConstructionState:
 		newModelState, retCmd = model.underConstruction.Update(msg)
 	}
@@ -60,6 +62,8 @@ func (model rootModel) View() string {
 	switch model.state {
 	case ToolSelectionMenuState:
 		return model.toolSelection.View()
+	case MapSelectionMenuState:
+		return model.mapSelection.View()
 	case UnderConstructionState:
 		return model.underConstruction.View()
 	}
