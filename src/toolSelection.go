@@ -59,16 +59,19 @@ func (model *toolSelectionModel) Update(msg tea.Msg) (modelState, tea.Cmd) {
 
 func (model *toolSelectionModel) View() string {
 	var sb strings.Builder
-	sb.WriteString("SCREEPS WAR ROOM\n")
-	sb.WriteString("----------------\n\n")
+	sb.WriteString(heading1Style.Render("Screeps War Room"))
+	sb.WriteRune('\n')
+	sb.WriteRune('\n')
+	sb.WriteString(heading2Style.Render("Select a tool:"))
+	sb.WriteRune('\n')
 
 	for i := BuildingPlannerTool; i <= InvasionPlannerTool; i++ {
 		if model.currentSelection == i {
-			sb.WriteString("> ")
+			sb.WriteString(inputStyle.Render("\t" + toolSelectionTypeStr[i]))
 		} else {
-			sb.WriteString("- ")
+			sb.WriteString(greyedOutStyle.Render("\t" + toolSelectionTypeStr[i]))
 		}
-		sb.WriteString(toolSelectionTypeStr[i] + "\n")
+		sb.WriteRune('\n')
 	}
 
 	return sb.String()
